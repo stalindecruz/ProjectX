@@ -40,31 +40,28 @@ Scoring guide:
 - 50-69: Fair (noticeable fillers or pace issues)
 - 0-49: Needs Work (significant issues to address)`
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  })
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 1000, temperature: 0.4 },
+      }),
+    }
+  )
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => '')
-    if (response.status === 401) throw new Error('Invalid API key. Please check your Anthropic API key in Settings.')
+    if (response.status === 400) throw new Error('Invalid API key. Please check your Gemini API key in Settings.')
+    if (response.status === 403) throw new Error('API key not authorized. Make sure Generative Language API is enabled.')
     if (response.status === 429) throw new Error('Rate limit reached. Please wait a moment and try again.')
-    if (response.status === 500) throw new Error('Anthropic API server error. Please try again shortly.')
     throw new Error(`API request failed (${response.status}): ${errorBody}`)
   }
 
   const data = await response.json()
-  const rawText: string = data.content?.[0]?.text ?? ''
+  const rawText: string = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
   const cleaned = rawText.replace(/```(?:json)?\n?/g, '').replace(/```/g, '').trim()
 
   try {
