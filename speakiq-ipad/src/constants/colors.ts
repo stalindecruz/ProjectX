@@ -1,0 +1,16 @@
+export const Colors = {
+  accent:       '#c84b2f',
+  accentLight:  '#e8653e',
+  bg:           '#f5f2ec',
+  panel:        '#0d0d0d',
+  panelSurface: '#1a1a1a',
+  panelBorder:  '#2a2a2a',
+  text:         '#1a1612',
+  textMuted:    '#6b6560',
+  textLight:    '#9b928a',
+  creamCard:    '#fffef9',
+  green:        '#22a861',
+  amber:        '#d97706',
+  red:          '#dc2626',
+  filler:       '#f59e0b',
+}
