@@ -38,8 +38,7 @@
         {
           "microphonePermission": "SpeakIQ needs microphone access to record your speech for real-time coaching analysis."
         }
-      ],
-      "@react-native-voice/voice"
+      ]
     ]
   }
 }
