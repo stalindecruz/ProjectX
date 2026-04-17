@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as SecureStore from 'expo-secure-store'
 import { Session } from '../types'
@@ -27,13 +28,19 @@ export async function clearSessions(): Promise<void> {
 
 export async function getApiKey(): Promise<string> {
   try {
-    const key = await SecureStore.getItemAsync(API_KEY_KEY)
-    return key ?? ''
+    if (Platform.OS === 'web') {
+      return await AsyncStorage.getItem(API_KEY_KEY) ?? ''
+    }
+    return await SecureStore.getItemAsync(API_KEY_KEY) ?? ''
   } catch {
     return ''
   }
 }
 
 export async function setApiKey(key: string): Promise<void> {
-  await SecureStore.setItemAsync(API_KEY_KEY, key)
+  if (Platform.OS === 'web') {
+    await AsyncStorage.setItem(API_KEY_KEY, key)
+  } else {
+    await SecureStore.setItemAsync(API_KEY_KEY, key)
+  }
 }
